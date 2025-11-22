@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link rel="'shortcut icon" href="ICON.png" type="IMAGE/ICON.PNG"> 
+<title>Trajados SC — Loja & Pagamento (All-in-One)</title>
+<style>
+  :root{
+    --bg:#050505; --panel:#0b0b0b; --accent:#00aaff; --gold:#d4af37; --muted:#bdbdbd;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Arial, sans-serif;background:linear-gradient(180deg,var(--bg),#070707);color:#fff;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+
+  /* ===== HEADER ===== */
+  header{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);backdrop-filter:blur(6px);border-bottom:1px solid rgba(255,255,255,0.03);z-index:60}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{font-family:"Playfair Display",serif;color:var(--gold);font-size:20px}
+  .slogan{font-size:12px;color:var(--muted)}
+  nav{display:flex;gap:12px;align-items:center}
+  .btn-ghost{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted);cursor:pointer}
+  .cart-btn{position:relative;padding:8px 12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border:1px solid rgba(255,255,255,0.03);cursor:pointer;display:flex;gap:8px;align-items:center}
+  .cart-count{min-width:20px;height:20px;border-radius:999px;background:var(--gold);color:#070707;display:inline-grid;place-items:center;font-weight:700;font-size:12px;box-shadow:0 6px 18px rgba(212,175,55,0.12)}
+
+  /* ===== HERO ===== */
+  .hero{max-width:1200px;margin:28px auto;padding:20px;display:flex;gap:24px;align-items:center}
+  .hero-card{flex:1;color:var(--muted)}
+  .hero-card h1{font-family:"Playfair Display",serif;color:var(--gold);margin:0 0 8px 0}
+  .hero-card p{margin:0 0 14px 0}
+  .btn-primary{background:linear-gradient(180deg,var(--gold) 0%, #d4af37 100%);color:#070707;padding:10px 14px;border-radius:12px;border:none;cursor:pointer;font-weight:700}
+  .mock{width:380px;height:380px;border-radius:18px;background:linear-gradient(160deg, rgba(212,163,76,0.06), rgba(255,255,255,0.01));overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.7)}
+  .mock img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+
+  /* ===== CARROSSEL (top) ===== */
+  .carousel{width:100%;max-width:960px;margin:18px auto;border-radius:16px;overflow:hidden;position:relative;box-shadow:0 0 28px rgba(0,170,255,0.12)}
+  .carousel-track{display:flex;transition:transform .6s ease}
+  .carousel-img{width:100%;flex-shrink:0;object-fit:cover;transition:transform .6s ease,filter .6s ease;filter:brightness(0.85)}
+  .carousel-img.active{transform:scale(1.15);filter:brightness(1)}
+  .carousel-img:hover{transform:scale(1.22);filter:brightness(1.15)}
+  .carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,153,255,0.6);border:none;padding:10px 14px;font-size:24px;color:#fff;cursor:pointer;border-radius:10px;transition:all .2s}
+  .carousel-btn:hover{transform:translateY(-50%) scale(1.1);background:rgba(0,153,255,1)}
+  .left{left:10px}.right{right:10px}
+
+  /* ===== PRODUCTS ===== */
+  .products{max-width:1200px;margin:12px auto 60px;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+  .product{background:var(--panel);padding:12px;border-radius:14px;border:1px solid rgba(212,163,76,0.04);transition:transform .28s ease,box-shadow .28s}
+  .product:hover{transform:translateY(-8px);box-shadow:0 18px 48px rgba(0,0,0,0.6)}
+  .imgwrap{height:220px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.02)}
+  .imgwrap img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease,filter .45s}
+  .product:hover .imgwrap img{transform:scale(1.08);filter:brightness(1.12)}
+  .info{display:flex;justify-content:space-between;align-items:center;padding:10px 6px}
+  .info h4{margin:0;color:var(--gold);font-family:"Playfair Display",serif}
+  .price{color:#fff;font-weight:700}
+  .add-btn{width:100%;padding:10px;border-radius:10px;border:0;background:var(--accent);color:#001;font-weight:800;cursor:pointer;margin-top:10px;box-shadow:0 8px 34px rgba(0,170,255,0.12)}
+  .add-btn:hover{transform:scale(1.03);background:#00bfff}
+
+  /* ===== CART PANEL ===== */
+  .cart-panel{position:fixed;right:-420px;top:0;width:420px;height:100vh;background:linear-gradient(180deg, rgba(10,10,10,0.96), rgba(8,8,8,0.98));box-shadow:-30px 0 80px rgba(0,0,0,0.7);transition:right .32s cubic-bezier(.2,.9,.1,1);z-index:90;padding:20px;display:flex;flex-direction:column;gap:12px}
+  .cart-panel.open{right:0;animation:cartOpen .48s cubic-bezier(.2,.9,.1,1)}
+  @keyframes cartOpen{0%{right:-420px;opacity:0;transform:translateX(40px)}60%{opacity:1;transform:translateX(-6px)}100%{right:0;transform:none}}
+  .cart-items{overflow:auto;flex:1;padding-right:6px}
+  .cart-item{display:flex;gap:12px;align-items:center;padding:10px;border-radius:10px;margin-bottom:10px;background:linear-gradient(180deg, rgba(255,255,255,0.005), rgba(255,255,255,0.002));border:1px solid rgba(255,255,255,0.02)}
+  .cart-item img{width:68px;height:68px;object-fit:cover;border-radius:8px}
+  .ci-info h5{margin:0;color:var(--gold);font-family:"Playfair Display",serif}
+  .ci-info small{color:var(--muted);display:block;margin-top:6px}
+  .qty{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,0.02)}
+  .qty button{background:transparent;border:none;color:var(--muted);cursor:pointer;font-weight:700}
+  .cart-footer{border-top:1px dashed rgba(255,255,255,0.03);padding-top:12px;display:flex;flex-direction:column;gap:10px}
+  .total-row{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-weight:700}
+  .checkout-btn{display:flex;align-items:center;justify-content:center;padding:12px;border-radius:12px;border:none;background:linear-gradient(180deg,var(--gold) 0%, #d4af37 100%);color:#070707;font-weight:800;cursor:pointer}
+  .empty{color:var(--muted);text-align:center;padding:28px 6px}
+
+  /* ===== FOOTER PREMIUM ===== */
+  footer{padding:26px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid rgba(255,215,0,0.08);position:relative;background:#060606}
+  footer::before{content:"";position:absolute;top:0;left:-200px;width:200px;height:100%;background:linear-gradient(120deg,transparent,rgba(255,215,0,0.45),transparent);animation:shine 3s infinite linear}
+  @keyframes shine{from{left:-200px}to{left:100%}}
+  footer strong{color:var(--gold)}
+
+  /* ===== PAYMENT VIEW ===== */
+  .view{display:none}
+  .view.active{display:block}
+  .payment-wrap{max-width:980px;margin:18px auto;background:linear-gradient(180deg, rgba(10,10,10,0.98), rgba(6,6,6,0.98));padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 30px 60px rgba(0,0,0,0.6)}
+  .grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+  label{display:block;color:var(--muted);font-size:13px;margin-top:10px}
+  input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#fff;margin-top:6px}
+  .card-preview{background:linear-gradient(135deg,#003b57,#0099ff);height:220px;border-radius:12px;padding:18px;color:#fff;box-shadow:0 20px 50px rgba(0,170,255,0.12);transition:transform .6s;perspective:1000px}
+  .card-number{font-size:20px;letter-spacing:3px;margin-top:40px}
+  .card-name{margin-top:18px;font-size:14px}
+  .card-exp{margin-top:6px;font-size:13px}
+  .summary{background:rgba(255,255,255,0.02);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);margin-top:12px}
+  .summary h3{margin:0 0 8px 0;color:var(--gold)}
+  .total{font-weight:800;font-size:18px;margin-top:8px;color:#fff}
+  .pay-btn{margin-top:16px;padding:12px;border-radius:10px;border:0;background:var(--accent);color:#001;font-weight:800;cursor:pointer;box-shadow:0 10px 30px rgba(0,170,255,0.12)}
+  .pay-btn:hover{transform:scale(1.02)}
+
+  /* RESPONSIVE */
+  @media(max-width:980px){.grid{grid-template-columns:1fr}.mock{width:320px;height:320px}.cart-panel{width:92%;max-width:360px}}
+  @media(max-width:520px){header{padding:12px 16px}.logo{font-size:18px}.product .imgwrap{height:180px}}
+
+  /* NOVO LOGO */
+  .logo-img {
+    width: 150px;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: drop-shadow(0 0 10px #00aaff);
+  }
+  .logo-img:hover {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 22px #00ccff);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<!-- ========== HEADER COM LOGO ========== -->
+<header>
+  <div class="brand">
+    <a href="index.html">
+      <img 
+        src="assets/logo.png"
+        alt="Logo Trajados SC"
+        class="logo-img"
+      >
+    </a>
+  </div>
+
+  <nav>
+    <button class="btn-ghost" onclick="showView('shop')">Loja</button>
+    <button class="btn-ghost" onclick="showView('payment')">Pagamento</button>
+    <div class="cart-btn" onclick="toggleCart()" title="Abrir carrinho">
+      <span>🛍️</span>
+      <span id="cartCount" class="cart-count">0</span>
+    </div>
+  </nav>
+</header>
+
+<!-- ========== MAIN VIEWS ========== -->
+<main>
+
+  <!-- SHOP VIEW -->
+  <section id="shop" class="view active">
+
+    <!-- HERO -->
+    <section class="hero" aria-label="Apresentação">
+      <div class="hero-card">
+        <h1>Elegância sem esforço. Luxo que impressiona.</h1>
+        <p class="lead">Peças premium com acabamento exclusivo. Entrega rápida e pagamento seguro.</p>
+        <div style="margin-top:12px">
+          <button class="btn-primary" onclick="scrollToProducts()">Comprar agora</button>
+        </div>
+      </div>
+      <div class="mock" aria-hidden="true">
+        <img src="moletom-lacoste.jpg" alt="Destaque" />
+      </div>
+    </section>
+
+    <!-- CARROSSEL -->
+    <div class="carousel" aria-hidden="false">
+      <div class="carousel-track">
+        <img src="moletom-lacoste.jpg" class="carousel-img">
+        <img src="tenis-lacoste.jpg" class="carousel-img">
+        <img src="calca-lacoste.jpg" class="carousel-img">
+        <img src="conjunto-lacoste.jpg" class="carousel-img">
+        <img src="bermuda-lacoste.jpg" class="carousel-img">
+      </div>
+      <button class="carousel-btn left" onclick="moveCarousel(-1)" aria-label="Anterior">&#10094;</button>
+      <button class="carousel-btn right" onclick="moveCarousel(1)" aria-label="Próximo">&#10095;</button>
+    </div>
+
+    <!-- PRODUCTS GRID -->
+    <section id="products" class="products" aria-label="Produtos">
+      <div class="product" data-id="p1" data-name="Moletom Lacoste" data-price="199.00">
+        <div class="imgwrap"><img src="moletom-lacoste.jpg" alt="Moletom Lacoste"></div>
+        <div class="info"><h4>Moletom Lacoste</h4><div class="price">R$ 199,00</div></div>
+        <div style="color:var(--muted);font-size:13px">Tamanhos: P M G</div>
+        <button class="add-btn" onclick="addToCart('p1')">Adicionar ao carrinho</button>
+      </div>
+
+      <div class="product" data-id="p2" data-name="Calça Lacoste" data-price="149.00">
+        <div class="imgwrap"><img src="calca-lacoste.jpg" alt="Calça Lacoste"></div>
+        <div class="info"><h4>Calça Lacoste</h4><div class="price">R$ 149,00</div></div>
+        <div style="color:var(--muted);font-size:13px">Tamanhos: 38–44</div>
+        <button class="add-btn" onclick="addToCart('p2')">Adicionar ao carrinho</button>
+      </div>
+
+      <div class="product" data-id="p3" data-name="Tênis Lacoste" data-price="299.00">
+        <div class="imgwrap"><img src="tenis-lacoste.jpg" alt="Tênis Lacoste"></div>
+        <div class="info"><h4>Tênis Lacoste</h4><div class="price">R$ 299,00</div></div>
+        <div style="color:var(--muted);font-size:13px">Numerações: 38–44</div>
+        <button class="add-btn" onclick="addToCart('p3')">Adicionar ao carrinho</button>
+      </div>
+
+      <div class="product" data-id="p4" data-name="Conjunto Lacoste" data-price="249.00">
+        <div class="imgwrap"><img src="conjunto-lacoste.jpg" alt="Conjunto Lacoste"></div>
+        <div class="info"><h4>Conjunto Lacoste</h4><div class="price">R$ 249,00</div></div>
+        <div style="color:var(--muted);font-size:13px">Conjunto: blusa + calça</div>
+        <button class="add-btn" onclick="addToCart('p4')">Adicionar ao carrinho</button>
+      </div>
+
+      <div class="product" data-id="p5" data-name="Bermuda Lacoste" data-price="99.00">
+        <div class="imgwrap"><img src="bermuda-lacoste.jpg" alt="Bermuda Lacoste"></div>
+        <div class="info"><h4>Bermuda Lacoste</h4><div class="price">R$ 99,00</div></div>
+        <div style="color:var(--muted);font-size:13px">Tamanhos: P M G</div>
+        <button class="add-btn" onclick="addToCart('p5')">Adicionar ao carrinho</button>
+      </div>
+    </section>
+  </section>
+
+  <!-- PAYMENT VIEW -->
+  <section id="payment" class="view payment-view">
+    <div class="payment-wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <a style="color:var(--muted);cursor:pointer" onclick="showView('shop')">← Voltar à loja</a>
+          <h2 style="margin:6px 0 0 0;color:var(--accent)">Finalizar Pagamento</h2>
+          <div style="color:var(--muted);font-size:13px">Confira seus itens e escolha o pagamento</div>
+        </div>
+        <div style="color:var(--muted)">Trajados SC — O melhor que tá tendo</div>
+      </div>
+
+      <div class="grid">
+        <!-- form -->
+        <div>
+          <label>Nome completo</label>
+          <input id="name" type="text" placeholder="Seu nome">
+
+          <label>Email</label>
+          <input id="email" type="email" placeholder="seu@email.com">
+
+          <label>Telefone</label>
+          <input id="phone" type="text" placeholder="(00) 00000-0000">
+
+          <label>Endereço</label>
+          <input id="address" type="text" placeholder="Rua, número, complemento">
+
+          <label>Forma de pagamento</label>
+          <select id="paymentMethod" onchange="onPaymentChange()">
+            <option value="pix">PIX</option>
+            <option value="card" selected>Cartão de Crédito</option>
+            <option value="boleto">Boleto</option>
+          </select>
+
+          <div id="cardFields" style="margin-top:12px">
+            <label>Número do cartão</label>
+            <input id="inputCardNumber" maxlength="19" placeholder="•••• •••• •••• ••••">
+
+            <label>Nome no cartão</label>
+            <input id="inputCardName" placeholder="Nome impresso no cartão">
+
+            <label>Validade (MM/AA)</label>
+            <input id="inputCardExp" maxlength="5" placeholder="MM/AA">
+          </div>
+
+          <button class="pay-btn" onclick="confirmPayment()">Confirmar Pedido</button>
+        </div>
+
+        <!-- preview + resumo -->
+        <aside>
+          <div class="card-preview" id="cardPreview" aria-hidden="false">
+            <div class="card-number" id="cardNumber">•••• •••• •••• ••••</div>
+            <div class="card-name" id="cardName">NOME DO TITULAR</div>
+            <div class="card-exp" id="cardExp">00/00</div>
+          </div>
+
+          <div class="summary">
+            <h3>Resumo da compra</h3>
+            <div id="itemsList" style="margin-top:8px"></div>
+            <div class="total" id="totalAmount">R$ 0,00</div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ========== CART PANEL ========== -->
+<aside id="cartPanel" class="cart-panel" aria-hidden="true">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <h3 style="margin:0;color:var(--gold)">Seu Carrinho</h3>
+    <button class="btn-ghost" onclick="toggleCart()">Fechar</button>
+  </div>
+
+  <div id="cartItems" class="cart-items" aria-live="polite">
+    <div class="empty">Nenhum item no carrinho — adicione produtos.</div>
+  </div>
+
+  <div class="cart-footer">
+    <div class="total-row"><div style="color:var(--muted)">Subtotal</div><div id="subtotal">R$ 0,00</div></div>
+    <div style="display:flex;gap:10px">
+      <button class="checkout-btn" onclick="goToPayment()">Finalizar Compra</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+  © <strong>Trajados SC</strong> — O melhor que tá tendo.
+</footer>
+
+<!-- ========== SCRIPTS ========== -->
+<script>
+/* ----------------- Utilities ----------------- */
+function formatBRL(v){ return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
+function qs(sel){ return document.querySelector(sel) }
+function qsa(sel){ return Array.from(document.querySelectorAll(sel)) }
+
+/* ----------------- Carousel (top) ----------------- */
+let carouselIndex = 0;
+const carouselTrack = qs('.carousel-track');
+const carouselImgs = qsa('.carousel-img');
+function updateCarousel(){
+  carouselTrack.style.transform = `translateX(${-carouselIndex * 100}%)`;
+  carouselImgs.forEach((img,i)=> img.classList.toggle('active', i === carouselIndex));
+}
+function moveCarousel(dir){
+  carouselIndex = (carouselIndex + dir + carouselImgs.length) % carouselImgs.length;
+  updateCarousel();
+}
+setInterval(()=> moveCarousel(1), 3500);
+updateCarousel();
+
+/* ----------------- Product catalog (reads DOM) ----------------- */
+const productEls = qsa('.product');
+const PRODUCTS = {};
+productEls.forEach(el=>{
+  const id = el.dataset.id;
+  PRODUCTS[id] = {
+    id,
+    name: el.dataset.name,
+    price: parseFloat(el.dataset.price),
+    img: el.querySelector('img')?.getAttribute('src') || ''
+  };
+});
+
+/* ----------------- Cart (localStorage) ----------------- */
+const CART_KEY = 'trajados_cart_v1';
+let cart = JSON.parse(localStorage.getItem(CART_KEY) || '{}');
+
+const cartCountEl = qs('#cartCount');
+const cartItemsEl = qs('#cartItems');
+const subtotalEl = qs('#subtotal');
+
+function saveCart(){
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  updateCartUI();
+}
+
+function updateCartUI(){
+  const qty = Object.values(cart).reduce((a,b)=>a+b,0);
+  cartCountEl.textContent = qty;
+  cartItemsEl.innerHTML = '';
+  if(qty === 0){
+    cartItemsEl.innerHTML = '<div class="empty">Nenhum item no carrinho — adicione produtos.</div>';
+    subtotalEl.textContent = formatBRL(0);
+    return;
+  }
+  let total = 0;
+  for(const id in cart){
+    const p = PRODUCTS[id];
+    const q = cart[id];
+    const line = p.price * q;
+    total += line;
+    const item = document.createElement('div');
+    item.className = 'cart-item';
+    item.innerHTML = `
+      <img src="${p.img}" alt="${p.name}">
+      <div class="ci-info">
+        <h5>${p.name}</h5>
+        <small>${formatBRL(p.price)} x ${q}</small>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div class="qty">
+          <button onclick="changeQty('${id}',-1)">−</button>
+          <div style="min-width:20px;text-align:center;color:#fff">${q}</div>
+          <button onclick="changeQty('${id}',1)">+</button>
+        </div>
+        <div style="margin-top:8px;font-weight:700">${formatBRL(line)}</div>
+        <button style="margin-top:6px;background:transparent;border:none;color:var(--muted);cursor:pointer" onclick="removeItem('${id}')">Remover</button>
+      </div>
+    `;
+    cartItemsEl.appendChild(item);
+  }
+  subtotalEl.textContent = formatBRL(total);
+}
+
+/* Cart actions */
+function addToCart(id){
+  cart[id] = (cart[id]||0) + 1;
+  saveCart();
+  openCartTemporarily();
+}
+function changeQty(id,delta){
+  if(!cart[id]) return;
+  cart[id] += delta;
+  if(cart[id] <= 0) delete cart[id];
+  saveCart();
+}
+function removeItem(id){ delete cart[id]; saveCart(); }
+
+/* Cart panel controls */
+const cartPanel = qs('#cartPanel');
+function toggleCart(){ const open = cartPanel.classList.toggle('open'); cartPanel.setAttribute('aria-hidden', !open); }
+function openCart(){ cartPanel.classList.add('open'); cartPanel.setAttribute('aria-hidden','false'); }
+function closeCart(){ cartPanel.classList.remove('open'); cartPanel.setAttribute('aria-hidden','true'); }
+function openCartTemporarily(){ openCart(); setTimeout(()=>{ closeCart(); },1200); }
+
+/* ----------------- Views: shop <-> payment ----------------- */
+function showView(name){
+  qsa('.view').forEach(v => v.classList.remove('active'));
+  qs(`#${name}`).classList.add('active');
+  if(name === 'payment'){ renderCartSummary(); scrollToTop() }
+  else scrollToTop();
+}
+function goToPayment(){ saveCart(); showView('payment') }
+function scrollToProducts(){ qs('#products').scrollIntoView({behavior:'smooth', block:'start'}) }
+function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}) }
+
+/* ----------------- Payment screen (integrated) ----------------- */
+const inputCardNumber = qs('#inputCardNumber');
+const inputCardName = qs('#inputCardName');
+const inputCardExp = qs('#inputCardExp');
+const cardNumberEl = qs('#cardNumber');
+const cardNameEl = qs('#cardName');
+const cardExpEl = qs('#cardExp');
+const cardFieldsWrap = qs('#cardFields');
+
+function maskCardNumber(value){
+  return value.replace(/\D/g,'').slice(0,16).replace(/(.{4})/g,'$1 ').trim();
+}
+if(inputCardNumber){
+  inputCardNumber.addEventListener('input', e=>{
+    const v = maskCardNumber(e.target.value);
+    e.target.value = v;
+    cardNumberEl.innerText = v.padEnd(19,'•');
+  });
+}
+if(inputCardName){
+  inputCardName.addEventListener('input', e=>{
+    cardNameEl.innerText = e.target.value.toUpperCase() || 'NOME DO TITULAR';
+  });
+}
+if(inputCardExp){
+  inputCardExp.addEventListener('input', e=>{
+    let v = e.target.value.replace(/\D/g,'').slice(0,4);
+    if(v.length>=3) v = v.slice(0,2) + '/' + v.slice(2);
+    e.target.value = v;
+    cardExpEl.innerText = v || '00/00';
+  });
+}
+
+function onPaymentChange(){
+  const m = qs('#paymentMethod').value;
+  cardFieldsWrap.style.display = (m === 'card') ? 'block' : 'none';
+}
+onPaymentChange();
+
+/* Render cart summary inside payment view */
+function renderCartSummary(){
+  const itemsList = qs('#itemsList');
+  itemsList.innerHTML = '';
+  let total = 0;
+  if(Object.keys(cart).length === 0){
+    itemsList.innerHTML = '<div style="color:var(--muted)">Seu carrinho está vazio.</div>';
+    total = 0;
+  } else {
+    for(const id in cart){
+      const q = cart[id];
+      const p = PRODUCTS[id];
+      const line = p.price * q;
+      total += line;
+      const row = document.createElement('div');
+      row.style.display='flex'; row.style.justifyContent='space-between'; row.style.marginBottom='10px';
+      row.innerHTML = `<div style="display:flex;gap:10px;align-items:center">
+        <img src="${p.img}" style="width:56px;height:56px;object-fit:cover;border-radius:8px">
+        <div>
+          <div style="font-weight:700">${p.name}</div>
+          <div style="color:var(--muted);font-size:13px">${q} x ${formatBRL(p.price)}</div>
+        </div>
+      </div>
+      <div style="align-self:center;font-weight:700">${formatBRL(line)}</div>`;
+      itemsList.appendChild(row);
+    }
+  }
+  qs('#totalAmount').innerText = formatBRL(total);
+}
+
+/* Confirm payment (simulate), clear cart and show success */
+function confirmPayment(){
+  const totalText = qs('#totalAmount').innerText;
+  if(Object.keys(cart).length === 0){
+    alert('Seu carrinho está vazio. Adicione produtos antes de finalizar.');
+    return;
+  }
+  // simulate processing
+  alert('Pagamento simulado realizado com sucesso!\nTotal: ' + totalText);
+  cart = {};
+  saveCart();
+  showView('shop');
+}
+
+/* go back helper (header link) */
+function goBackToShop(){ showView('shop') }
+
+/* Initialize UI */
+updateCartUI();
+
+/* Accessibility: close cart on Escape */
+document.addEventListener('keydown', e => { if(e.key === 'Escape'){ closeCart(); } });
+
+</script>
+</body>
+</html>
